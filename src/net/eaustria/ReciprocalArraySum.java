@@ -35,9 +35,10 @@ public final class ReciprocalArraySum {
      */
     protected static double seqArraySum(final double[] input) {
         double sum = 0;
-
-        // ToDo: Compute sum of reciprocals of array elements
-       return -1;
+        for (double l: input) {
+            sum += l;
+        }
+        return sum;
     }
   
 
@@ -53,7 +54,7 @@ public final class ReciprocalArraySum {
         private final double[] input;
 
         private double value;
-        private static int SEQUENTIAL_THRESHOLD = 50000;
+        private static int SEQUENTIAL_THRESHOLD = 2;
 
 
         /**
@@ -81,35 +82,26 @@ public final class ReciprocalArraySum {
         }
 
 
-        //Bei DEMO return type Integer aber hier nicht möglich!
-        //Was macht das double value?
-        //Was macht int SEQUENTIAL_THRESHOLD?
         @Override
         protected void compute() {
             // TODO: Implement Thread forking on Threshold value. (If size of
             // array smaller than threshold: compute sequentially else, fork 
             // 2 new threads
             if (input.length <= SEQUENTIAL_THRESHOLD){
-                double sum = computeSumDirectly();
-                //return sum;
+                value = seqArraySum(input);
             }else{
                 int mid = input.length / 2;
-                ReciprocalArraySumTask firstSubTask = new ReciprocalArraySumTask(0, mid, Arrays.copyOfRange(input, 0, mid));
-                ReciprocalArraySumTask secondSubTask = new ReciprocalArraySumTask(startIndexInclusive, endIndexExclusive, Arrays.copyOfRange(input, mid, input.length));
+                ReciprocalArraySumTask firstSubTask = new ReciprocalArraySumTask(startIndexInclusive, mid, Arrays.copyOfRange(input, startIndexInclusive, mid));
+                ReciprocalArraySumTask secondSubTask = new ReciprocalArraySumTask(mid, endIndexExclusive, Arrays.copyOfRange(input, mid, endIndexExclusive));
 
                 invokeAll(firstSubTask, secondSubTask);
-
+                firstSubTask.join();
+                secondSubTask.join();
+                value = firstSubTask.getValue() + secondSubTask.getValue();
                 //return firstSubTask.join() + secondSubTask.join();
             }
         }
 
-        private int computeSumDirectly() {
-            int sum = 0;
-            for (double l: input) {
-                sum += l;
-            }
-            return sum;
-        }
     }
   
 
@@ -123,10 +115,16 @@ public final class ReciprocalArraySum {
      */
     protected static double parManyTaskArraySum(final double[] input, final int numTasks) {
         double sum = 0;
-       // ToDo: Start Calculation with help of ForkJoinPool
-        Thread thread = new ReciprocalArraySumTask();
-       
+        // ToDo: Start Calculation with help of ForkJoinPool
+        ForkJoinPool pool = new ForkJoinPool(numTasks);
+        ReciprocalArraySumTask r = new ReciprocalArraySumTask(0,input.length,input);
+        pool.invoke(r);
+        sum = r.getValue();
        return sum;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(ReciprocalArraySum.parManyTaskArraySum(new double[]{1,2,3,4,5,6,7.8}, 8));
     }
 }
 
