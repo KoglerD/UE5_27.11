@@ -13,8 +13,11 @@ package net.eaustria;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 /**
  * Class wrapping methods for implementing reciprocal array sum in parallel.
@@ -36,7 +39,7 @@ public final class ReciprocalArraySum {
     protected static double seqArraySum(final double[] input) {
         double sum = 0;
         for (double l: input) {
-            sum += l;
+            sum += 1/l;
         }
         return sum;
     }
@@ -54,7 +57,7 @@ public final class ReciprocalArraySum {
         private final double[] input;
 
         private double value;
-        private static int SEQUENTIAL_THRESHOLD = 2;
+        private static int SEQUENTIAL_THRESHOLD = 50000;
 
 
         /**
@@ -94,10 +97,12 @@ public final class ReciprocalArraySum {
                 ReciprocalArraySumTask firstSubTask = new ReciprocalArraySumTask(startIndexInclusive, mid, Arrays.copyOfRange(input, startIndexInclusive, mid));
                 ReciprocalArraySumTask secondSubTask = new ReciprocalArraySumTask(mid, endIndexExclusive, Arrays.copyOfRange(input, mid, endIndexExclusive));
 
-                invokeAll(firstSubTask, secondSubTask);
+                firstSubTask.fork();
+                secondSubTask.compute();
                 firstSubTask.join();
-                secondSubTask.join();
                 value = firstSubTask.getValue() + secondSubTask.getValue();
+                invokeAll(firstSubTask, secondSubTask);
+
                 //return firstSubTask.join() + secondSubTask.join();
             }
         }
@@ -117,14 +122,23 @@ public final class ReciprocalArraySum {
         double sum = 0;
         // ToDo: Start Calculation with help of ForkJoinPool
         ForkJoinPool pool = new ForkJoinPool(numTasks);
+        System.out.println(pool.getParallelism());
         ReciprocalArraySumTask r = new ReciprocalArraySumTask(0,input.length,input);
         pool.invoke(r);
+        //pool.submit(r);
         sum = r.getValue();
        return sum;
     }
 
     public static void main(String[] args) {
-        System.out.println(ReciprocalArraySum.parManyTaskArraySum(new double[]{1,2,3,4,5,6,7.8}, 8));
+        double[] array = new double[100000];
+        //Random random = new Random();
+        for (int i = 0; i < array.length; i++) {
+            array[i] = i+1;
+            //array[i] = random.nextDouble();
+        }
+        System.out.println(ReciprocalArraySum.parManyTaskArraySum(array, Runtime.getRuntime().availableProcessors()));
+
     }
 }
 

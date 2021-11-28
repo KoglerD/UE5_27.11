@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="333e6e74-8adc-4dc6-bbd7-b87287bdf122" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="333e6e74-8adc-4dc6-bbd7-b87287bdf122" name="Changes" comment="Programm funkt noch nicht (mit invoke errors, mit submit 0.0)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/net/eaustria/ReciprocalArraySum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/net/eaustria/ReciprocalArraySum.java" afterDir="false" />
     </list>
@@ -55,6 +54,14 @@
       <option name="presentableId" value="Default" />
       <updated>1636965401971</updated>
     </task>
+    <task id="LOCAL-00001" summary="Programm funkt noch nicht (mit invoke errors, mit submit 0.0)">
+      <created>1638023663568</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1638023663568</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -67,5 +74,10 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Programm funkt noch nicht (mit invoke errors, mit submit 0.0)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Programm funkt noch nicht (mit invoke errors, mit submit 0.0)" />
   </component>
 </project>
